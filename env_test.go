@@ -50,4 +50,27 @@ func Test_GetRaw(t *testing.T) {
 func Test_Invalid(t *testing.T) {
 	_, err := New[Config]("doc.txt")
 	require.NotNil(t, err)
+
+	_, err = NewEnv[Config]("")
+	require.NotNil(t, err)
+}
+
+func Test_Validate(t *testing.T) {
+	type ConfigV struct {
+		EmailAddress string `mapstructure:"NODE_ENV" validate:"required,isEmail"`
+	}
+
+	_, err := NewEnv[ConfigV](".env.example")
+	require.NotNil(t, err)
+}
+
+func Test_Default(t *testing.T) {
+	type ConfigDefault struct {
+		NodeEnv string `mapstructure:"NODEENV" default:"production"`
+	}
+
+	cfg, err := NewEnv[ConfigDefault](".env.example")
+	require.Nil(t, err)
+
+	require.Equal(t, "production", cfg.NodeEnv)
 }

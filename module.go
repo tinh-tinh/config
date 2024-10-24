@@ -34,10 +34,11 @@ func ForRoot[E any, param Param[E]](params ...param) core.Module {
 		} else {
 			for _, v := range params {
 				if reflect.TypeOf(v).Kind() == reflect.String {
-					lastValue, err = New[E](any(v).(string))
+					val, err := New[E](any(v).(string))
 					if err != nil {
 						continue
 					}
+					lastValue = val
 				} else if reflect.TypeOf(v).Kind() == reflect.Struct {
 					opt := any(v).(Options[E])
 					err = godotenv.Load(opt.EnvPath)
