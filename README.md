@@ -1,8 +1,8 @@
 # Tinh Tinh
 
 <div>
-<img alt="GitHub Release" src="https://img.shields.io/github/v/release/tinh-tinh/tinhtinh">
-<img alt="GitHub License" src="https://img.shields.io/github/license/tinh-tinh/tinhtinh">
+<img alt="GitHub Release" src="https://img.shields.io/github/v/release/tinh-tinh/config">
+<img alt="GitHub License" src="https://img.shields.io/github/license/tinh-tinh/config">
 </div>
 
 
