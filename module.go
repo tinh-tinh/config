@@ -66,3 +66,11 @@ func ForRoot[E any, param Param[E]](params ...param) core.Module {
 		return configModule
 	}
 }
+
+func Inject[E any](module *core.DynamicModule) *E {
+	cfg, ok := module.Ref(ENV).(*E)
+	if !ok {
+		return nil
+	}
+	return cfg
+}
