@@ -2,22 +2,51 @@ package config
 
 import (
 	"log"
+	"reflect"
 
+	"github.com/joho/godotenv"
 	"github.com/tinh-tinh/tinhtinh/core"
 )
 
 const ENV core.Provide = "ConfigEnv"
 
-func ForRoot[E any](path ...string) core.Module {
+type Options[E any] struct {
+	EnvPath       string
+	IgnoreEnvFile bool
+	// Only for env file
+	Load func() *E
+}
+
+type Param[V any] interface {
+	string | Options[V]
+}
+
+func ForRoot[E any, param Param[E]](params ...param) core.Module {
 	return func(module *core.DynamicModule) *core.DynamicModule {
 		var lastValue *E
-		path = append([]string{".env"}, path...)
-		for _, v := range path {
-			env, err := New[E](v)
+		var err error
+
+		if len(params) == 0 {
+			lastValue, err = New[E]("")
 			if err != nil {
-				continue
+				log.Println("env not found")
 			}
-			lastValue = env
+		} else {
+			for _, v := range params {
+				if reflect.TypeOf(v).Kind() == reflect.String {
+					lastValue, err = New[E](any(v).(string))
+					if err != nil {
+						continue
+					}
+				} else if reflect.TypeOf(v).Kind() == reflect.Struct {
+					opt := any(v).(Options[E])
+					err = godotenv.Load(opt.EnvPath)
+					if err != nil {
+						continue
+					}
+					lastValue = opt.Load()
+				}
+			}
 		}
 
 		configModule := module.New(core.NewModuleOptions{})

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -32,7 +31,7 @@ func Test_Scan(t *testing.T) {
 }
 
 func Test_New_Env(t *testing.T) {
-	cfg, err := New[Config](".env.example")
+	cfg, err := NewEnv[Config](".env.example")
 	require.Nil(t, err)
 
 	require.Equal(t, "development", cfg.NodeEnv)
@@ -40,30 +39,15 @@ func Test_New_Env(t *testing.T) {
 	require.Equal(t, 5*time.Minute, cfg.ExpiresIn)
 }
 
-type ConfigYaml struct {
-	NodeEnv   string        `yaml:"node_env"`
-	Port      int           `yaml:"port"`
-	ExpiresIn time.Duration `yaml:"expires_in"`
-	Log       bool          `yaml:"log"`
-	Secret    interface{}   `yaml:"secret"`
-}
-
-func Test_New_Yml(t *testing.T) {
-	cfg, err := New[ConfigYaml]("env.yaml")
-	require.Nil(t, err)
-
-	fmt.Println(cfg)
-	require.Equal(t, "development", cfg.NodeEnv)
-	require.Equal(t, 3000, cfg.Port)
-	require.Equal(t, 5*time.Minute, cfg.ExpiresIn)
-	require.Equal(t, true, cfg.Log)
-	require.Equal(t, "secret", cfg.Secret)
-}
-
 func Test_GetRaw(t *testing.T) {
-	_, err := New[Config](".env.example")
+	_, err := NewEnv[Config](".env.example")
 	require.Nil(t, err)
 
 	dev := GetRaw("NODE_ENV")
 	require.Equal(t, "development", dev)
+}
+
+func Test_Invalid(t *testing.T) {
+	_, err := New[Config]("doc.txt")
+	require.NotNil(t, err)
 }

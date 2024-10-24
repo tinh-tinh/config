@@ -1,51 +1,26 @@
 package config
 
 import (
-	"errors"
 	"fmt"
-	"log"
 	"os"
 	"reflect"
-	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/tinh-tinh/tinhtinh/dto/transform"
-	"gopkg.in/yaml.v3"
 )
 
-func New[E any](path string) (*E, error) {
+func NewEnv[E any](path string) (*E, error) {
 	if path == "" {
 		path = ".env"
 	}
-	if strings.Contains(path, ".env") {
-		err := godotenv.Load(path)
-		if err != nil {
-			return nil, err
-		}
-
-		var env E
-		Scan(&env)
-		return &env, nil
-	} else if strings.Contains(path, ".yml") || strings.Contains(path, ".yaml") {
-		var e E
-		fmt.Println("here")
-
-		file, err := os.ReadFile(path)
-		if err != nil {
-			log.Printf("yamlFile get error: %v\n", err)
-			os.Exit(1)
-		}
-
-		err = yaml.Unmarshal(file, &e)
-		if err != nil {
-			log.Printf("get error: %v\n", err)
-			os.Exit(1)
-		}
-		return &e, nil
-	} else {
-		log.Printf("not supported type: %v\n", path)
-		return nil, errors.New("not support")
+	err := godotenv.Load(path)
+	if err != nil {
+		return nil, err
 	}
+
+	var env E
+	Scan(&env)
+	return &env, nil
 }
 
 func GetRaw(key string) string {
