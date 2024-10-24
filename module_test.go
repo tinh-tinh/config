@@ -66,8 +66,7 @@ func Test_LoadConfig(t *testing.T) {
 		},
 	})
 
-	cfg, ok := appModule.Ref(ENV).(*Cfg)
-	require.True(t, ok)
+	cfg := Inject[Cfg](appModule)
 	require.NotNil(t, cfg)
 	require.Equal(t, "development", cfg.NodeEnv)
 	require.Equal(t, "localhost", cfg.Database.Host)
