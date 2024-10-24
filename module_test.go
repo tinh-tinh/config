@@ -24,7 +24,7 @@ func Test_ForRootNil(t *testing.T) {
 func Test_ForRoot(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			ForRoot[Config](".env.example"),
+			ForRoot[Config](".env.example", ".env.local"),
 		},
 	})
 
@@ -58,6 +58,9 @@ func Test_LoadConfig(t *testing.T) {
 		Imports: []core.Module{
 			ForRoot[Cfg](Options[Cfg]{
 				EnvPath: ".env.example",
+				Load:    load,
+			}, Options[Cfg]{
+				EnvPath: ".env.local",
 				Load:    load,
 			}),
 		},

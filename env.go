@@ -7,6 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/tinh-tinh/tinhtinh/dto/transform"
+	"github.com/tinh-tinh/tinhtinh/dto/validator"
 )
 
 func NewEnv[E any](path string) (*E, error) {
@@ -20,6 +21,12 @@ func NewEnv[E any](path string) (*E, error) {
 
 	var env E
 	Scan(&env)
+
+	err = validator.Scanner(&env)
+	if err != nil {
+		return nil, err
+	}
+
 	return &env, nil
 }
 
@@ -34,6 +41,13 @@ func Scan(env interface{}) {
 		tagVal := field.Tag.Get("mapstructure")
 		if tagVal != "" {
 			val := os.Getenv(tagVal)
+			// Check default value
+			defaultVal := field.Tag.Get("default")
+			if val == "" {
+				val = defaultVal
+			}
+
+			// Check empty
 			if val == "" {
 				continue
 			}
