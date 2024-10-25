@@ -121,3 +121,13 @@ func Test_NewConfigRaw(t *testing.T) {
 	})
 	require.NotNil(t, appModule)
 }
+
+func Test_Nil(t *testing.T) {
+	module := core.NewModule(core.NewModuleOptions{})
+
+	cf := Inject[Config](module)
+	require.Nil(t, cf)
+
+	namespace := InjectNamespace[Config](module, "mongo")
+	require.Nil(t, namespace)
+}
