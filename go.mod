@@ -1,4 +1,4 @@
-module github.com/tinh-tinh/confi
+module github.com/tinh-tinh/config
 
 go 1.22.0
 
