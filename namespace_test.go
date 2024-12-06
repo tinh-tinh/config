@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"io"
@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/tinh-tinh/config"
 	"github.com/tinh-tinh/tinhtinh/core"
 )
 
@@ -23,7 +24,7 @@ func Test_Namespace(t *testing.T) {
 	mysqlController := func(module *core.DynamicModule) *core.DynamicController {
 		ctrl := module.NewController("mysql")
 
-		cfg := InjectNamespace[Config](module, "mysql")
+		cfg := config.InjectNamespace[Config](module, "mysql")
 		ctrl.Get("", func(ctx core.Ctx) error {
 			return ctx.JSON(core.Map{
 				"data": cfg.DBPort,
@@ -36,7 +37,7 @@ func Test_Namespace(t *testing.T) {
 	mysqlModule := func(module *core.DynamicModule) *core.DynamicModule {
 		mysql := module.New(core.NewModuleOptions{
 			Imports: []core.Module{
-				ForFeature[Config]("mysql"),
+				config.ForFeature[Config]("mysql"),
 			},
 			Controllers: []core.Controller{mysqlController},
 		})
@@ -47,7 +48,7 @@ func Test_Namespace(t *testing.T) {
 	mongoController := func(module *core.DynamicModule) *core.DynamicController {
 		ctrl := module.NewController("mongo")
 
-		cfg := InjectNamespace[Config](module, "mongo")
+		cfg := config.InjectNamespace[Config](module, "mongo")
 		ctrl.Get("", func(ctx core.Ctx) error {
 			return ctx.JSON(core.Map{
 				"data": cfg.DBPort,
@@ -60,7 +61,7 @@ func Test_Namespace(t *testing.T) {
 	mongoModule := func(module *core.DynamicModule) *core.DynamicModule {
 		mongo := module.New(core.NewModuleOptions{
 			Imports: []core.Module{
-				ForFeature("mongo", func() *Config {
+				config.ForFeature("mongo", func() *Config {
 					return &Config{
 						DBHost: os.Getenv("MONGO_DBHOST"),
 						DBPort: os.Getenv("MONGO_DBPORT"),
@@ -79,7 +80,7 @@ func Test_Namespace(t *testing.T) {
 	appModule := func() *core.DynamicModule {
 		module := core.NewModule(core.NewModuleOptions{
 			Imports: []core.Module{
-				ForRootRaw(".env.example"),
+				config.ForRootRaw(".env.example"),
 				mongoModule,
 				mysqlModule,
 			},
@@ -116,7 +117,7 @@ func Test_Namespace(t *testing.T) {
 func Test_NewConfigRaw(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			ForRootRaw(),
+			config.ForRootRaw(),
 		},
 	})
 	require.NotNil(t, appModule)
@@ -125,9 +126,9 @@ func Test_NewConfigRaw(t *testing.T) {
 func Test_Nil(t *testing.T) {
 	module := core.NewModule(core.NewModuleOptions{})
 
-	cf := Inject[Config](module)
+	cf := config.Inject[Config](module)
 	require.Nil(t, cf)
 
-	namespace := InjectNamespace[Config](module, "mongo")
+	namespace := config.InjectNamespace[Config](module, "mongo")
 	require.Nil(t, namespace)
 }

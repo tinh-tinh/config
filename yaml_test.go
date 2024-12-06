@@ -1,10 +1,11 @@
-package config
+package config_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"github.com/tinh-tinh/config"
 )
 
 type ConfigYaml struct {
@@ -16,7 +17,7 @@ type ConfigYaml struct {
 }
 
 func Test_New_Yml(t *testing.T) {
-	cfg, err := NewYaml[ConfigYaml]("env.yaml")
+	cfg, err := config.NewYaml[ConfigYaml]("env.yaml")
 	require.Nil(t, err)
 
 	require.Equal(t, "development", cfg.NodeEnv)
@@ -25,7 +26,7 @@ func Test_New_Yml(t *testing.T) {
 	require.Equal(t, true, cfg.Log)
 	require.Equal(t, "secret", cfg.Secret)
 
-	_, err = NewYaml[ConfigYaml]("")
+	_, err = config.NewYaml[ConfigYaml]("")
 	require.NotNil(t, err)
 
 	type Cfg struct {
@@ -36,6 +37,6 @@ func Test_New_Yml(t *testing.T) {
 		Secret    int           `yaml:"secret"`
 	}
 
-	_, err = NewYaml[Cfg]("env.yaml")
+	_, err = config.NewYaml[Cfg]("env.yaml")
 	require.NotNil(t, err)
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/tinh-tinh/tinhtinh/dto/transform"
@@ -55,11 +57,13 @@ func Scan(env interface{}) {
 			case "string":
 				ct.Field(i).SetString(val)
 			case "int":
-				ct.Field(i).SetInt(transform.StringToInt64(val))
+				valInt, _ := strconv.Atoi(val)
+				ct.Field(i).SetInt(int64(valInt))
 			case "bool":
-				ct.Field(i).SetBool(transform.StringToBool(val))
+				ct.Field(i).SetBool(transform.ToBool(val))
 			case "Duration":
-				ct.Field(i).Set(reflect.ValueOf(transform.StringToTimeDuration(val)))
+				valDate, _ := time.ParseDuration(val)
+				ct.Field(i).Set(reflect.ValueOf(valDate))
 			default:
 				fmt.Println(field.Type.Name())
 			}

@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"os"
@@ -6,17 +6,18 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"github.com/tinh-tinh/config"
 	"github.com/tinh-tinh/tinhtinh/core"
 )
 
 func Test_ForRootNil(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			ForRoot[Config, string](),
+			config.ForRoot[Config, string](),
 		},
 	})
 
-	cfg, ok := appModule.Ref(ENV).(*Config)
+	cfg, ok := appModule.Ref(config.ENV).(*Config)
 	require.False(t, ok)
 	require.Nil(t, cfg)
 }
@@ -24,11 +25,11 @@ func Test_ForRootNil(t *testing.T) {
 func Test_ForRoot(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			ForRoot[Config](".env.example", ".env.local"),
+			config.ForRoot[Config](".env.example", ".env.local"),
 		},
 	})
 
-	cfg, ok := appModule.Ref(ENV).(*Config)
+	cfg, ok := appModule.Ref(config.ENV).(*Config)
 	require.True(t, ok)
 	require.NotNil(t, cfg)
 	require.Equal(t, "development", cfg.NodeEnv)
@@ -56,17 +57,14 @@ func Test_LoadConfig(t *testing.T) {
 
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			ForRoot[Cfg](Options[Cfg]{
+			config.ForRoot[Cfg](config.Options[Cfg]{
 				EnvPath: ".env.example",
-				Load:    load,
-			}, Options[Cfg]{
-				EnvPath: ".env.local",
 				Load:    load,
 			}),
 		},
 	})
 
-	cfg := Inject[Cfg](appModule)
+	cfg := config.Inject[Cfg](appModule)
 	require.NotNil(t, cfg)
 	require.Equal(t, "development", cfg.NodeEnv)
 	require.Equal(t, "localhost", cfg.Database.Host)
@@ -76,11 +74,11 @@ func Test_LoadConfig(t *testing.T) {
 func Test_Yaml(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			ForRoot[ConfigYaml]("env.yaml"),
+			config.ForRoot[ConfigYaml]("env.yaml"),
 		},
 	})
 
-	cfg, ok := appModule.Ref(ENV).(*ConfigYaml)
+	cfg, ok := appModule.Ref(config.ENV).(*ConfigYaml)
 	require.True(t, ok)
 
 	require.Equal(t, "development", cfg.NodeEnv)

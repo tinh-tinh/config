@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
+	"github.com/tinh-tinh/config"
 )
 
 type Config struct {
@@ -21,7 +22,7 @@ func Test_Scan(t *testing.T) {
 	err := godotenv.Load(".env.example")
 	require.Nil(t, err)
 	var cfg Config
-	Scan(&cfg)
+	config.Scan(&cfg)
 
 	require.Equal(t, "development", cfg.NodeEnv)
 	require.Equal(t, 5000, cfg.Port)
@@ -31,7 +32,7 @@ func Test_Scan(t *testing.T) {
 }
 
 func Test_New_Env(t *testing.T) {
-	cfg, err := NewEnv[Config](".env.example")
+	cfg, err := config.NewEnv[Config](".env.example")
 	require.Nil(t, err)
 
 	require.Equal(t, "development", cfg.NodeEnv)
@@ -40,18 +41,18 @@ func Test_New_Env(t *testing.T) {
 }
 
 func Test_GetRaw(t *testing.T) {
-	_, err := NewEnv[Config](".env.example")
+	_, err := config.NewEnv[Config](".env.example")
 	require.Nil(t, err)
 
-	dev := GetRaw("NODE_ENV")
+	dev := config.GetRaw("NODE_ENV")
 	require.Equal(t, "development", dev)
 }
 
 func Test_Invalid(t *testing.T) {
-	_, err := New[Config]("doc.txt")
+	_, err := config.New[Config]("doc.txt")
 	require.NotNil(t, err)
 
-	_, err = NewEnv[Config]("")
+	_, err = config.NewEnv[Config]("")
 	require.NotNil(t, err)
 }
 
@@ -60,7 +61,7 @@ func Test_Validate(t *testing.T) {
 		EmailAddress string `mapstructure:"NODE_ENV" validate:"required,isEmail"`
 	}
 
-	_, err := NewEnv[ConfigV](".env.example")
+	_, err := config.NewEnv[ConfigV](".env.example")
 	require.NotNil(t, err)
 }
 
@@ -69,7 +70,7 @@ func Test_Default(t *testing.T) {
 		NodeEnv string `mapstructure:"NODEENV" default:"production"`
 	}
 
-	cfg, err := NewEnv[ConfigDefault](".env.example")
+	cfg, err := config.NewEnv[ConfigDefault](".env.example")
 	require.Nil(t, err)
 
 	require.Equal(t, "production", cfg.NodeEnv)

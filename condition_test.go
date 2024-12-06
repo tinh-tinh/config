@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"os"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
+	"github.com/tinh-tinh/config"
 	"github.com/tinh-tinh/tinhtinh/core"
 )
 
@@ -27,7 +28,7 @@ func Test_Condition(t *testing.T) {
 
 	module := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			RegisterWhen(userModule, "NODE_ENV"),
+			config.RegisterWhen(userModule, "NODE_ENV"),
 		},
 	})
 
@@ -53,7 +54,7 @@ func Test_ConditionFailed(t *testing.T) {
 
 	module := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			RegisterWhen(userModule, "HAHA"),
+			config.RegisterWhen(userModule, "HAHA"),
 		},
 	})
 
@@ -79,7 +80,7 @@ func Test_ConditionFnc(t *testing.T) {
 
 	module := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			RegisterWhen(userModule, func() bool {
+			config.RegisterWhen(userModule, func() bool {
 				return os.Getenv("NODE_ENV") == "development"
 			}),
 		},
@@ -107,7 +108,7 @@ func Test_ConditionFncFailed(t *testing.T) {
 
 	module := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Module{
-			RegisterWhen(userModule, func() bool {
+			config.RegisterWhen(userModule, func() bool {
 				return os.Getenv("NODE_ENV") == "HAHA"
 			}),
 		},
