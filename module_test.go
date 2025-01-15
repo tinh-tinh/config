@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tinh-tinh/config"
-	"github.com/tinh-tinh/tinhtinh/core"
+	"github.com/tinh-tinh/config/v2"
+	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
 func Test_ForRootNil(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.ForRoot[Config, string](),
 		},
 	})
@@ -24,7 +24,7 @@ func Test_ForRootNil(t *testing.T) {
 
 func Test_ForRoot(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.ForRoot[Config](".env.example", ".env.local"),
 		},
 	})
@@ -56,7 +56,7 @@ func Test_LoadConfig(t *testing.T) {
 	}
 
 	appModule := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.ForRoot[Cfg](config.Options[Cfg]{
 				EnvPath: ".env.example",
 				Load:    load,
@@ -73,7 +73,7 @@ func Test_LoadConfig(t *testing.T) {
 
 func Test_Yaml(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.ForRoot[ConfigYaml]("env.yaml"),
 		},
 	})

@@ -4,14 +4,14 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/tinh-tinh/tinhtinh/core"
+	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
 type RegisterWhenOptions interface {
 	string | func() bool
 }
 
-func RegisterWhen[opt RegisterWhenOptions](module core.Module, env opt) core.Module {
+func RegisterWhen[opt RegisterWhenOptions](module core.Modules, env opt) core.Modules {
 	condition := false
 
 	if reflect.TypeOf(env).Kind() == reflect.String {

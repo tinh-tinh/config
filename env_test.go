@@ -6,7 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
-	"github.com/tinh-tinh/config"
+	"github.com/tinh-tinh/config/v2"
 )
 
 type Config struct {
