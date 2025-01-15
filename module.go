@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/joho/godotenv"
-	"github.com/tinh-tinh/tinhtinh/core"
+	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
 const ENV core.Provide = "ConfigEnv"
@@ -21,8 +21,8 @@ type Param[V any] interface {
 	string | Options[V]
 }
 
-func ForRoot[E any, param Param[E]](params ...param) core.Module {
-	return func(module *core.DynamicModule) *core.DynamicModule {
+func ForRoot[E any, param Param[E]](params ...param) core.Modules {
+	return func(module core.Module) core.Module {
 		var lastValue *E
 		var err error
 
@@ -67,7 +67,7 @@ func ForRoot[E any, param Param[E]](params ...param) core.Module {
 	}
 }
 
-func Inject[E any](module *core.DynamicModule) *E {
+func Inject[E any](module core.Module) *E {
 	cfg, ok := module.Ref(ENV).(*E)
 	if !ok {
 		return nil

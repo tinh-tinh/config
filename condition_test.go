@@ -6,15 +6,15 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
-	"github.com/tinh-tinh/config"
-	"github.com/tinh-tinh/tinhtinh/core"
+	"github.com/tinh-tinh/config/v2"
+	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
 func Test_Condition(t *testing.T) {
 	godotenv.Load(".env.example")
 
 	const USER core.Provide = "TinhTinh"
-	userModule := func(module *core.DynamicModule) *core.DynamicModule {
+	userModule := func(module core.Module) core.Module {
 		mod := module.New(core.NewModuleOptions{})
 
 		mod.NewProvider(core.ProviderOptions{
@@ -27,7 +27,7 @@ func Test_Condition(t *testing.T) {
 	}
 
 	module := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.RegisterWhen(userModule, "NODE_ENV"),
 		},
 	})
@@ -40,7 +40,7 @@ func Test_ConditionFailed(t *testing.T) {
 	godotenv.Load(".env.example")
 
 	const USER core.Provide = "TinhTinh"
-	userModule := func(module *core.DynamicModule) *core.DynamicModule {
+	userModule := func(module core.Module) core.Module {
 		mod := module.New(core.NewModuleOptions{})
 
 		mod.NewProvider(core.ProviderOptions{
@@ -53,7 +53,7 @@ func Test_ConditionFailed(t *testing.T) {
 	}
 
 	module := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.RegisterWhen(userModule, "HAHA"),
 		},
 	})
@@ -66,7 +66,7 @@ func Test_ConditionFnc(t *testing.T) {
 	godotenv.Load(".env.example")
 
 	const USER core.Provide = "TinhTinh"
-	userModule := func(module *core.DynamicModule) *core.DynamicModule {
+	userModule := func(module core.Module) core.Module {
 		mod := module.New(core.NewModuleOptions{})
 
 		mod.NewProvider(core.ProviderOptions{
@@ -79,7 +79,7 @@ func Test_ConditionFnc(t *testing.T) {
 	}
 
 	module := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.RegisterWhen(userModule, func() bool {
 				return os.Getenv("NODE_ENV") == "development"
 			}),
@@ -94,7 +94,7 @@ func Test_ConditionFncFailed(t *testing.T) {
 	godotenv.Load(".env.example")
 
 	const USER core.Provide = "TinhTinh"
-	userModule := func(module *core.DynamicModule) *core.DynamicModule {
+	userModule := func(module core.Module) core.Module {
 		mod := module.New(core.NewModuleOptions{})
 
 		mod.NewProvider(core.ProviderOptions{
@@ -107,7 +107,7 @@ func Test_ConditionFncFailed(t *testing.T) {
 	}
 
 	module := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.RegisterWhen(userModule, func() bool {
 				return os.Getenv("NODE_ENV") == "HAHA"
 			}),

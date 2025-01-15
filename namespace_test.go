@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tinh-tinh/config"
-	"github.com/tinh-tinh/tinhtinh/core"
+	"github.com/tinh-tinh/config/v2"
+	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
 func Test_Namespace(t *testing.T) {
@@ -21,7 +21,7 @@ func Test_Namespace(t *testing.T) {
 		DBName string `mapstructure:"MYSQL_DBNAME"`
 	}
 
-	mysqlController := func(module *core.DynamicModule) *core.DynamicController {
+	mysqlController := func(module core.Module) core.Controller {
 		ctrl := module.NewController("mysql")
 
 		cfg := config.InjectNamespace[Config](module, "mysql")
@@ -34,18 +34,18 @@ func Test_Namespace(t *testing.T) {
 		return ctrl
 	}
 
-	mysqlModule := func(module *core.DynamicModule) *core.DynamicModule {
+	mysqlModule := func(module core.Module) core.Module {
 		mysql := module.New(core.NewModuleOptions{
-			Imports: []core.Module{
+			Imports: []core.Modules{
 				config.ForFeature[Config]("mysql"),
 			},
-			Controllers: []core.Controller{mysqlController},
+			Controllers: []core.Controllers{mysqlController},
 		})
 
 		return mysql
 	}
 
-	mongoController := func(module *core.DynamicModule) *core.DynamicController {
+	mongoController := func(module core.Module) core.Controller {
 		ctrl := module.NewController("mongo")
 
 		cfg := config.InjectNamespace[Config](module, "mongo")
@@ -58,9 +58,9 @@ func Test_Namespace(t *testing.T) {
 		return ctrl
 	}
 
-	mongoModule := func(module *core.DynamicModule) *core.DynamicModule {
+	mongoModule := func(module core.Module) core.Module {
 		mongo := module.New(core.NewModuleOptions{
-			Imports: []core.Module{
+			Imports: []core.Modules{
 				config.ForFeature("mongo", func() *Config {
 					return &Config{
 						DBHost: os.Getenv("MONGO_DBHOST"),
@@ -71,15 +71,15 @@ func Test_Namespace(t *testing.T) {
 					}
 				}),
 			},
-			Controllers: []core.Controller{mongoController},
+			Controllers: []core.Controllers{mongoController},
 		})
 
 		return mongo
 	}
 
-	appModule := func() *core.DynamicModule {
+	appModule := func() core.Module {
 		module := core.NewModule(core.NewModuleOptions{
-			Imports: []core.Module{
+			Imports: []core.Modules{
 				config.ForRootRaw(".env.example"),
 				mongoModule,
 				mysqlModule,
@@ -116,7 +116,7 @@ func Test_Namespace(t *testing.T) {
 
 func Test_NewConfigRaw(t *testing.T) {
 	appModule := core.NewModule(core.NewModuleOptions{
-		Imports: []core.Module{
+		Imports: []core.Modules{
 			config.ForRootRaw(),
 		},
 	})
