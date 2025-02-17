@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.9.0
-	github.com/tinh-tinh/tinhtinh v1.4.0
+	github.com/tinh-tinh/tinhtinh/v2 v2.0.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

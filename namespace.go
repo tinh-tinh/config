@@ -4,13 +4,13 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
-	"github.com/tinh-tinh/tinhtinh/core"
+	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
 // Namespace only available for env file
 
-func ForRootRaw(path ...string) core.Module {
-	return func(module *core.DynamicModule) *core.DynamicModule {
+func ForRootRaw(path ...string) core.Modules {
+	return func(module core.Module) core.Module {
 		err := godotenv.Load(path...)
 		if err != nil {
 			log.Printf("can read env file because %s\n", err.Error())
@@ -19,8 +19,8 @@ func ForRootRaw(path ...string) core.Module {
 	}
 }
 
-func ForFeature[E any](name string, fncs ...func() *E) core.Module {
-	return func(module *core.DynamicModule) *core.DynamicModule {
+func ForFeature[E any](name string, fncs ...func() *E) core.Modules {
+	return func(module core.Module) core.Module {
 		var value E
 		if len(fncs) > 0 {
 			value = *fncs[0]()
@@ -43,7 +43,7 @@ func GetNamespace(name string) core.Provide {
 	return core.Provide(name)
 }
 
-func InjectNamespace[E any](module *core.DynamicModule, name string) *E {
+func InjectNamespace[E any](module core.Module, name string) *E {
 	cfg, ok := module.Ref(GetNamespace(name)).(*E)
 	if !ok {
 		return nil
