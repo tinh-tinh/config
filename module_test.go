@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tinh-tinh/config"
+	"github.com/tinh-tinh/config/v2"
 	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
