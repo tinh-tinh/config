@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tinh-tinh/config"
+	"github.com/tinh-tinh/config/v2"
 )
 
 type ConfigYaml struct {

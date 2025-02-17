@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/tinh-tinh/tinhtinh/dto/transform"
-	"github.com/tinh-tinh/tinhtinh/dto/validator"
+	"github.com/tinh-tinh/tinhtinh/v2/dto/transform"
+	"github.com/tinh-tinh/tinhtinh/v2/dto/validator"
 )
 
 func NewEnv[E any](path string) (*E, error) {
