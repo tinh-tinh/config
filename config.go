@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"strings"
 )
@@ -11,7 +10,6 @@ func New[E any](path string) (*E, error) {
 	if path == "" {
 		path = ".env"
 	}
-	fmt.Println("path is ", path)
 
 	if strings.Contains(path, ".env") {
 		return NewEnv[E](path)
