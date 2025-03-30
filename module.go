@@ -67,7 +67,7 @@ func ForRoot[E any, param Param[E]](params ...param) core.Modules {
 	}
 }
 
-func Inject[E any](module core.Module) *E {
+func Inject[E any](module core.RefProvider) *E {
 	cfg, ok := module.Ref(ENV).(*E)
 	if !ok {
 		return nil

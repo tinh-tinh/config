@@ -1,14 +1,13 @@
 package config
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/tinh-tinh/tinhtinh/v2/dto/transform"
 	"github.com/tinh-tinh/tinhtinh/v2/dto/validator"
 )
 
@@ -53,19 +52,41 @@ func Scan(env interface{}) {
 			if val == "" {
 				continue
 			}
-			switch field.Type.Name() {
-			case "string":
+			switch field.Type.Kind() {
+			case reflect.String:
 				ct.Field(i).SetString(val)
-			case "int":
-				valInt, _ := strconv.Atoi(val)
-				ct.Field(i).SetInt(int64(valInt))
-			case "bool":
-				ct.Field(i).SetBool(transform.ToBool(val))
-			case "Duration":
-				valDate, _ := time.ParseDuration(val)
-				ct.Field(i).Set(reflect.ValueOf(valDate))
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				if field.Type == reflect.TypeOf(time.Duration(0)) {
+					valDate, err := time.ParseDuration(val)
+					if err != nil {
+						log.Default().Printf("Error parsing duration: %v for field %s\n", err, field.Name)
+						continue
+					}
+					ct.Field(i).Set(reflect.ValueOf(valDate))
+				} else {
+					valInt, err := strconv.ParseInt(val, 10, 64)
+					if err != nil {
+						log.Default().Printf("Error parsing int: %v for field %s\n", err, field.Name)
+						continue
+					}
+					ct.Field(i).SetInt(valInt)
+				}
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				valUint, err := strconv.ParseUint(val, 10, 64)
+				if err != nil {
+					log.Default().Printf("Error parsing uint: %v for field %s\n", err, field.Name)
+					continue
+				}
+				ct.Field(i).SetUint(valUint)
+			case reflect.Bool:
+				valBool, err := strconv.ParseBool(val)
+				if err != nil {
+					log.Default().Printf("Error parsing bool: %v for field %s\n", err, field.Name)
+					continue
+				}
+				ct.Field(i).SetBool(valBool)
 			default:
-				fmt.Println(field.Type.Name())
+				log.Default().Println("Unsupported type: ", field.Type.Name())
 			}
 		}
 	}
