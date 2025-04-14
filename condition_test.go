@@ -11,7 +11,8 @@ import (
 )
 
 func Test_Condition(t *testing.T) {
-	godotenv.Load(".env.example")
+	err := godotenv.Load(".env.example")
+	require.Nil(t, err)
 
 	const USER core.Provide = "TinhTinh"
 	userModule := func(module core.Module) core.Module {
@@ -37,7 +38,8 @@ func Test_Condition(t *testing.T) {
 }
 
 func Test_ConditionFailed(t *testing.T) {
-	godotenv.Load(".env.example")
+	err := godotenv.Load(".env.example")
+	require.Nil(t, err)
 
 	const USER core.Provide = "TinhTinh"
 	userModule := func(module core.Module) core.Module {
@@ -63,7 +65,8 @@ func Test_ConditionFailed(t *testing.T) {
 }
 
 func Test_ConditionFnc(t *testing.T) {
-	godotenv.Load(".env.example")
+	err := godotenv.Load(".env.example")
+	require.Nil(t, err)
 
 	const USER core.Provide = "TinhTinh"
 	userModule := func(module core.Module) core.Module {
@@ -91,7 +94,8 @@ func Test_ConditionFnc(t *testing.T) {
 }
 
 func Test_ConditionFncFailed(t *testing.T) {
-	godotenv.Load(".env.example")
+	err := godotenv.Load(".env.example")
+	require.Nil(t, err)
 
 	const USER core.Provide = "TinhTinh"
 	userModule := func(module core.Module) core.Module {

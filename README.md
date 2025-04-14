@@ -12,5 +12,5 @@ Config module for Tinh Tinh application
 ## Install
 
 ```bash
-go get -u github.com/tinh-tinh/config
+go get -u github.com/tinh-tinh/config/v2
 ```
