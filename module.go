@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/joho/godotenv"
+	"github.com/tinh-tinh/tinhtinh/v2/common"
 	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
@@ -32,21 +33,27 @@ func ForRoot[E any, param Param[E]](params ...param) core.Modules {
 				log.Println("env not found")
 			}
 		} else {
+			var envArrs []E
 			for _, v := range params {
 				if reflect.TypeOf(v).Kind() == reflect.String {
 					val, err := New[E](any(v).(string))
 					if err != nil {
 						continue
 					}
-					lastValue = val
+					envArrs = append(envArrs, *val)
 				} else if reflect.TypeOf(v).Kind() == reflect.Struct {
 					opt := any(v).(Options[E])
 					err = godotenv.Load(opt.EnvPath)
 					if err != nil {
 						continue
 					}
-					lastValue = opt.Load()
+					val := opt.Load()
+					envArrs = append(envArrs, *val)
 				}
+			}
+			if len(envArrs) > 0 {
+				value := common.MergeStruct(envArrs...)
+				lastValue = &value
 			}
 		}
 

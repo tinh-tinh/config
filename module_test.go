@@ -87,3 +87,31 @@ func Test_Yaml(t *testing.T) {
 	require.Equal(t, true, cfg.Log)
 	require.Equal(t, "secret", cfg.Secret)
 }
+
+func Test_Hybrid(t *testing.T) {
+	type HybridEnv struct {
+		NodeEnv   string        `yaml:"node_env"`
+		Port      int           `yaml:"port"`
+		ExpiresIn time.Duration `yaml:"expires_in"`
+		Log       bool          `yaml:"log"`
+		Special   string        `mapstructure:"SPECIAL"`
+	}
+	appModule := core.NewModule(core.NewModuleOptions{
+		Imports: []core.Modules{
+			config.ForRoot[HybridEnv]("env.yaml", ".env.example"),
+		},
+	})
+
+	cfg, ok := appModule.Ref(config.ENV).(*HybridEnv)
+	require.True(t, ok)
+	require.NotNil(t, cfg)
+
+	// Test that values from both YAML and env files are properly merged
+	require.Equal(t, "development", cfg.NodeEnv) // From YAML file
+	require.Equal(t, 3000, cfg.Port)             // From YAML file
+	require.True(t, cfg.Log)                     // From YAML file
+	require.NotEmpty(t, cfg.Special)             // From env file (if SPECIAL is set)
+
+	// Optional: Print for debugging
+	t.Logf("Merged config: %+v", cfg)
+}
