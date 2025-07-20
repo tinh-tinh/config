@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -86,4 +87,24 @@ func Test_Yaml(t *testing.T) {
 	require.Equal(t, 5*time.Minute, cfg.ExpiresIn)
 	require.Equal(t, true, cfg.Log)
 	require.Equal(t, "secret", cfg.Secret)
+}
+
+func Test_Hybrid(t *testing.T) {
+	type HybridEnv struct {
+		NodeEnv   string        `yaml:"node_env"`
+		Port      int           `yaml:"port"`
+		ExpiresIn time.Duration `yaml:"expires_in"`
+		Log       bool          `yaml:"log"`
+		Special   string        `mapstructure:"SPECIAL"`
+	}
+	appModule := core.NewModule(core.NewModuleOptions{
+		Imports: []core.Modules{
+			config.ForRoot[HybridEnv]("env.yaml", ".env.example"),
+		},
+	})
+
+	cfg, ok := appModule.Ref(config.ENV).(*HybridEnv)
+	require.True(t, ok)
+
+	fmt.Println(cfg)
 }
