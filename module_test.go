@@ -1,7 +1,6 @@
 package config_test
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -109,9 +108,9 @@ func Test_Hybrid(t *testing.T) {
 
 	// Test that values from both YAML and env files are properly merged
 	require.Equal(t, "development", cfg.NodeEnv) // From YAML file
-	require.Equal(t, 3000, cfg.Port)            // From YAML file
-	require.True(t, cfg.Log)                    // From YAML file
-	require.NotEmpty(t, cfg.Special)            // From env file (if SPECIAL is set)
+	require.Equal(t, 3000, cfg.Port)             // From YAML file
+	require.True(t, cfg.Log)                     // From YAML file
+	require.NotEmpty(t, cfg.Special)             // From env file (if SPECIAL is set)
 
 	// Optional: Print for debugging
 	t.Logf("Merged config: %+v", cfg)
