@@ -105,6 +105,14 @@ func Test_Hybrid(t *testing.T) {
 
 	cfg, ok := appModule.Ref(config.ENV).(*HybridEnv)
 	require.True(t, ok)
+	require.NotNil(t, cfg)
 
-	fmt.Println(cfg)
+	// Test that values from both YAML and env files are properly merged
+	require.Equal(t, "development", cfg.NodeEnv) // From YAML file
+	require.Equal(t, 3000, cfg.Port)            // From YAML file
+	require.True(t, cfg.Log)                    // From YAML file
+	require.NotEmpty(t, cfg.Special)            // From env file (if SPECIAL is set)
+
+	// Optional: Print for debugging
+	t.Logf("Merged config: %+v", cfg)
 }
