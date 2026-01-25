@@ -3,6 +3,7 @@ module github.com/tinh-tinh/config/v2
 go 1.22.0
 
 require (
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.9.0
 	github.com/tinh-tinh/tinhtinh/v2 v2.5.1

@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 
+	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
 	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
@@ -25,7 +26,12 @@ func ForFeature[E any](name string, fncs ...func() *E) core.Modules {
 		if len(fncs) > 0 {
 			value = *fncs[0]()
 		} else {
-			Scan(&value)
+			opts := env.Options{
+				DefaultValueTagName: "default",
+			}
+			if err := env.ParseWithOptions(&value, opts); err != nil {
+				log.Fatalf("failed to parse env: %v", err)
+			}
 		}
 
 		cfgModule := module.New(core.NewModuleOptions{})

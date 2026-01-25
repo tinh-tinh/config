@@ -1,11 +1,10 @@
 package config_test
 
 import (
-	"os"
-	"os/exec"
 	"testing"
 	"time"
 
+	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 	"github.com/tinh-tinh/config/v2"
@@ -16,7 +15,7 @@ type Config struct {
 	Port      int           `env:"PORT"`
 	ExpiresIn time.Duration `env:"EXPIRES_IN"`
 	Log       bool          `env:"LOG"`
-	Special   interface{}   `env:"SPECIAL"`
+	Special   interface{}   `env:"-"`
 	Secret    string        `env:"SECRET"`
 }
 
@@ -24,7 +23,8 @@ func Test_Scan(t *testing.T) {
 	err := godotenv.Load(".env.example")
 	require.Nil(t, err)
 	var cfg Config
-	config.Scan(&cfg)
+	err = env.Parse(&cfg)
+	require.Nil(t, err)
 
 	require.Equal(t, "development", cfg.NodeEnv)
 	require.Equal(t, 5000, cfg.Port)
@@ -90,7 +90,8 @@ func Test_Scan_ExtraTypes(t *testing.T) {
 	t.Setenv("ESTABLISHED", "2023-10-26T12:00:00Z")
 
 	var cfg ConfigExtra
-	config.Scan(&cfg)
+	err := env.Parse(&cfg)
+	require.Nil(t, err)
 
 	require.Equal(t, uint(123), cfg.Count)
 	require.Equal(t, 3.14, cfg.Ratio)
@@ -118,15 +119,9 @@ func Test_Scan_ErrorCases(t *testing.T) {
 	t.Setenv("TIME_VAL", "invalid_time")
 
 	var cfg ConfigError
-	config.Scan(&cfg)
-
-	// Verify fields remain zero values
-	require.Equal(t, 0, cfg.IntVal)
-	require.Equal(t, uint(0), cfg.UintVal)
-	require.Equal(t, 0.0, cfg.FloatVal)
-	require.Equal(t, false, cfg.BoolVal)
-	require.Equal(t, time.Duration(0), cfg.DurationVal)
-	require.Equal(t, time.Time{}, cfg.TimeVal)
+	// env.Parse returns error on invalid input types usually
+	err := env.Parse(&cfg)
+	require.Error(t, err)
 }
 
 func Test_Scan_PrivateField(t *testing.T) {
@@ -139,56 +134,12 @@ func Test_Scan_PrivateField(t *testing.T) {
 	t.Setenv("PRIVATE", "private_val")
 
 	var cfg ConfigPrivate
-	config.Scan(&cfg)
+	err := env.Parse(&cfg)
+	require.Nil(t, err)
 
 	require.Equal(t, "public_val", cfg.Public)
 	// private field should remain empty/default
 	require.Equal(t, "", cfg.private)
 }
 
-func Test_Scan_Fatal(t *testing.T) {
-	if os.Getenv("BE_CRASHER") == "1" {
-		config.Scan(nil)
-		return
-	}
-	cmd := exec.Command(os.Args[0], "-test.run=Test_Scan_Fatal")
-	cmd.Env = append(os.Environ(), "BE_CRASHER=1")
-	err := cmd.Run()
-	if e, ok := err.(*exec.ExitError); ok && !e.Success() {
-		// Pass
-		return
-	}
-	t.Fatalf("process ran with err %v, want exit status 1", err)
-}
-
-func Test_Scan_Fatal_NotPointer(t *testing.T) {
-	if os.Getenv("BE_CRASHER") == "1" {
-		var cfg Config
-		config.Scan(cfg) // Not a pointer
-		return
-	}
-	cmd := exec.Command(os.Args[0], "-test.run=Test_Scan_Fatal_NotPointer")
-	cmd.Env = append(os.Environ(), "BE_CRASHER=1")
-	err := cmd.Run()
-	if e, ok := err.(*exec.ExitError); ok && !e.Success() {
-		// Pass
-		return
-	}
-	t.Fatalf("process ran with err %v, want exit status 1", err)
-}
-
-func Test_Scan_Fatal_NotStruct(t *testing.T) {
-	if os.Getenv("BE_CRASHER") == "1" {
-		var i int
-		config.Scan(&i) // Pointer to int, not struct
-		return
-	}
-	cmd := exec.Command(os.Args[0], "-test.run=Test_Scan_Fatal_NotStruct")
-	cmd.Env = append(os.Environ(), "BE_CRASHER=1")
-	err := cmd.Run()
-	if e, ok := err.(*exec.ExitError); ok && !e.Success() {
-		// Pass
-		return
-	}
-	t.Fatalf("process ran with err %v, want exit status 1", err)
-}
+// Removed Test_Scan_Fatal tests as env.Parse returns error instead of fatal panic

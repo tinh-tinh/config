@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/joho/godotenv"
-	"github.com/tinh-tinh/tinhtinh/v2/common"
 	"github.com/tinh-tinh/tinhtinh/v2/core"
 )
 
@@ -52,7 +51,7 @@ func ForRoot[E any, param Param[E]](params ...param) core.Modules {
 				}
 			}
 			if len(envArrs) > 0 {
-				value := common.MergeStruct(envArrs...)
+				value := mergeStruct(envArrs...)
 				lastValue = &value
 			}
 		}
@@ -80,4 +79,36 @@ func Inject[E any](module core.RefProvider) *E {
 		return nil
 	}
 	return cfg
+}
+
+func mergeStruct[T any](input ...T) T {
+	var result T
+	resultVal := reflect.ValueOf(&result).Elem()
+
+	for _, item := range input {
+		inputVal := reflect.ValueOf(item)
+		mergeRecursive(resultVal, inputVal)
+	}
+
+	return result
+}
+
+func mergeRecursive(target, source reflect.Value) {
+	for i := 0; i < target.NumField(); i++ {
+		tField := target.Field(i)
+		sField := source.Field(i)
+
+		// Handle exported fields only
+		if !tField.CanSet() {
+			continue
+		}
+
+		if tField.Kind() == reflect.Struct {
+			mergeRecursive(tField, sField)
+		} else {
+			if !sField.IsZero() {
+				tField.Set(sField)
+			}
+		}
+	}
 }
