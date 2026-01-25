@@ -12,6 +12,8 @@ github.com/tinh-tinh/tinhtinh/v2 v2.0.2 h1:54czOqe0wTPqe2HjqAFuuG380A3sYs2I16YwV
 github.com/tinh-tinh/tinhtinh/v2 v2.0.2/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
 github.com/tinh-tinh/tinhtinh/v2 v2.3.0 h1:CS4pF41JY/eGh6NIlTd7idCU20db+pbNFKxAkw/zM3c=
 github.com/tinh-tinh/tinhtinh/v2 v2.3.0/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
+github.com/tinh-tinh/tinhtinh/v2 v2.5.1 h1:G9kMFs60nX5BzTCILDfafQjrAfD869OTF7VO+5Nlib8=
+github.com/tinh-tinh/tinhtinh/v2 v2.5.1/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=

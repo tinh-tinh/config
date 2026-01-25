@@ -39,15 +39,15 @@ The Config module for the Tinh Tinh framework provides flexible configuration ma
 ```go
 import "github.com/tinh-tinh/config/v2"
 
-type AppConfig struct {
-    NodeEnv   string        `mapstructure:"NODE_ENV"`
-    Port      int           `mapstructure:"PORT"`
-    ExpiresIn time.Duration `mapstructure:"EXPIRES_IN"`
-    Log       bool          `mapstructure:"LOG"`
-    Secret    string        `mapstructure:"SECRET"`
+type Config struct {
+    NodeEnv   string        `env:"NODE_ENV"`
+    Port      int           `env:"PORT"`
+    ExpiresIn time.Duration `env:"EXPIRES_IN"`
+    Log       bool          `env:"LOG"`
+    Secret    string        `env:"SECRET"`
 }
 
-cfg, err := config.NewEnv[AppConfig](".env")
+cfg, err := config.NewEnv[Config](".env")
 if err != nil {
     panic(err)
 }
