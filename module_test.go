@@ -94,7 +94,7 @@ func Test_Hybrid(t *testing.T) {
 		Port      int           `yaml:"port"`
 		ExpiresIn time.Duration `yaml:"expires_in"`
 		Log       bool          `yaml:"log"`
-		Special   string        `mapstructure:"SPECIAL"`
+		Special   string        `env:"SPECIAL"`
 	}
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Modules{

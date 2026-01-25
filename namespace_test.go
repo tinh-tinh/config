@@ -14,11 +14,11 @@ import (
 
 func Test_Namespace(t *testing.T) {
 	type Config struct {
-		DBHost string `mapstructure:"MYSQL_DBHOST"`
-		DBPort string `mapstructure:"MYSQL_DBPORT"`
-		DBUser string `mapstructure:"MYSQL_DBUSER"`
-		DBPass string `mapstructure:"MYSQL_DBPASS"`
-		DBName string `mapstructure:"MYSQL_DBNAME"`
+		DBHost string `env:"MYSQL_DBHOST"`
+		DBPort string `env:"MYSQL_DBPORT"`
+		DBUser string `env:"MYSQL_DBUSER"`
+		DBPass string `env:"MYSQL_DBPASS"`
+		DBName string `env:"MYSQL_DBNAME"`
 	}
 
 	mysqlController := func(module core.Module) core.Controller {
