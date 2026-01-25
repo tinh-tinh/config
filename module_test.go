@@ -115,3 +115,69 @@ func Test_Hybrid(t *testing.T) {
 	// Optional: Print for debugging
 	t.Logf("Merged config: %+v", cfg)
 }
+
+func Test_Hybrid_Nested(t *testing.T) {
+	type Database struct {
+		Host string `yaml:"host"`
+		Port int    `yaml:"port"`
+		User string `env:"DB_USER"`
+		Pass string `env:"DB_PASS"`
+		Name string `env:"DB_NAME"`
+	}
+
+	type NestedConfig struct {
+		NodeEnv  string   `yaml:"node_env"`
+		Database Database `yaml:"database"`
+		Secret   string   `env:"SPECIAL"`
+	}
+
+	appModule := core.NewModule(core.NewModuleOptions{
+		Imports: []core.Modules{
+			config.ForRoot[NestedConfig]("env.yaml", ".env.example"),
+		},
+	})
+
+	cfg, ok := appModule.Ref(config.ENV).(*NestedConfig)
+	require.True(t, ok)
+	require.NotNil(t, cfg)
+
+	// Precedence: New mergeStruct overwrites if source is non-zero.
+	// So Env (second arg) overrides YAML (first arg).
+	require.Equal(t, "special", cfg.Secret)
+
+	require.Equal(t, "localhost", cfg.Database.Host)
+	require.Equal(t, 5432, cfg.Database.Port)
+	require.Equal(t, "root", cfg.Database.User)
+	require.Equal(t, "root", cfg.Database.Pass)
+	require.Equal(t, "db", cfg.Database.Name)
+}
+
+func Test_ForRoot_ParseError(t *testing.T) {
+	// Create a temporary .env file with invalid data
+	// Use a unique key to avoid collision with existing env vars (like PORT)
+	key := "UNIQUE_BAD_INT"
+	envContent := []byte(key + "=abc")
+	err := os.WriteFile(".env.error", envContent, 0644)
+	require.Nil(t, err)
+
+	t.Cleanup(func() {
+		os.Remove(".env.error")
+		os.Unsetenv(key)
+	})
+
+	// Define a config struct that expects an integer for UNIQUE_BAD_INT
+	type ConfigInt struct {
+		Val int `env:"UNIQUE_BAD_INT"`
+	}
+
+	appModule := core.NewModule(core.NewModuleOptions{
+		Imports: []core.Modules{
+			config.ForRoot[ConfigInt](".env.error"),
+		},
+	})
+
+	// Since parsing fails, the config should not be loaded and thus should be nil
+	cfg, ok := appModule.Ref(config.ENV).(*ConfigInt)
+	require.False(t, ok)
+	require.Nil(t, cfg)
+}

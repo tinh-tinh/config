@@ -1,3 +1,5 @@
+github.com/caarlos0/env/v11 v11.3.1 h1:cArPWC15hWmEt+gWk7YBi7lEXTXCvpaSdCiZE2X5mCA=
+github.com/caarlos0/env/v11 v11.3.1/go.mod h1:qupehSf/Y0TUTsxKywqRt/vJjN5nz6vauiYEUUr8P4U=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
@@ -6,12 +8,6 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-github.com/tinh-tinh/tinhtinh/v2 v2.0.0-beta.7 h1:2jqUwMWEJLID3i0OTkHW1UShAUtqZG6SXrzmlffNghs=
-github.com/tinh-tinh/tinhtinh/v2 v2.0.0-beta.7/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
-github.com/tinh-tinh/tinhtinh/v2 v2.0.2 h1:54czOqe0wTPqe2HjqAFuuG380A3sYs2I16YwVxTu0Zs=
-github.com/tinh-tinh/tinhtinh/v2 v2.0.2/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
-github.com/tinh-tinh/tinhtinh/v2 v2.3.0 h1:CS4pF41JY/eGh6NIlTd7idCU20db+pbNFKxAkw/zM3c=
-github.com/tinh-tinh/tinhtinh/v2 v2.3.0/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
 github.com/tinh-tinh/tinhtinh/v2 v2.5.1 h1:G9kMFs60nX5BzTCILDfafQjrAfD869OTF7VO+5Nlib8=
 github.com/tinh-tinh/tinhtinh/v2 v2.5.1/go.mod h1:4nppE7KAIswZKutI9ElMqAD9kyash7aea0Ewowsqj5g=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
