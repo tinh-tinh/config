@@ -9,16 +9,11 @@ import (
 )
 
 func NewEnv[E any](path string) (*E, error) {
-	if path == "" {
-		path = ".env"
-	}
-	// We don't check for error here because it's possible that the user
-	// provides environment variables directly without a .env file.
-	// However, to maintain backward compatibility with previous strict behavior (as enforced by tests),
-	// we will return error if godotenv fails, unless we decide to relax it.
-	// The previous implementation returned error.
-	if err := godotenv.Load(path); err != nil {
-		return nil, err
+	// Load .env file if path is provided (optional - won't fail if file doesn't exist)
+	// This allows users to provide environment variables directly via OS without a .env file
+	if path != "" {
+		// Ignore error - .env file is optional, env.ParseWithOptions will read from OS env
+		_ = godotenv.Load(path)
 	}
 
 	var cfg E

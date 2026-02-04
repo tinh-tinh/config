@@ -11,15 +11,22 @@ import (
 )
 
 func Test_ForRootNil(t *testing.T) {
+	// When no path is provided, ForRoot should still work
+	// by reading environment variables from OS via env/v11
+	type SimpleConfig struct {
+		TestVar string `env:"TEST_VAR_FOR_NIL" default:"default_value"`
+	}
+
 	appModule := core.NewModule(core.NewModuleOptions{
 		Imports: []core.Modules{
-			config.ForRoot[Config, string](),
+			config.ForRoot[SimpleConfig, string](),
 		},
 	})
 
-	cfg, ok := appModule.Ref(config.ENV).(*Config)
-	require.False(t, ok)
-	require.Nil(t, cfg)
+	cfg, ok := appModule.Ref(config.ENV).(*SimpleConfig)
+	require.True(t, ok)
+	require.NotNil(t, cfg)
+	require.Equal(t, "default_value", cfg.TestVar)
 }
 
 func Test_ForRoot(t *testing.T) {
